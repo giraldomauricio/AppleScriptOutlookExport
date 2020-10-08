@@ -12,6 +12,16 @@ on base64encode(str)
 	return do shell script "base64 <<<" & quoted form of str
 end base64encode
 
+on FileExists(theFile) -- (String) as Boolean
+	tell application "System Events"
+		if exists file theFile then
+			return true
+		else
+			return false
+		end if
+	end tell
+end FileExists
+
 -- Writes logs to disk
 on write_to_file(this_data, target_file, append_data) -- (string, file path as string, boolean)
 	set fileReference to open for access file the target_file with write permission
@@ -33,8 +43,13 @@ end leadZero
 -- Writes the log in the correct format
 on WriteLog(the_text, the_file_name)
 	set this_file to logLocation & the_file_name
-	log "Writing to: " & this_file
-	my write_to_file(the_text, this_file, true)
+	
+	if my FileExists(this_file) then
+		log "File already exists."
+	else
+		log "Writing to: " & this_file
+		my write_to_file(the_text, this_file, true)
+	end if
 end WriteLog
 
 -- Message extraction
