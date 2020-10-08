@@ -34,7 +34,7 @@ end leadZero
 on WriteLog(the_text, the_file_name)
 	set this_file to logLocation & the_file_name
 	log "Writing to: " & this_file
-	-- my write_to_file(the_text, this_file, true)
+	my write_to_file(the_text, this_file, true)
 end WriteLog
 
 -- Message extraction
@@ -69,7 +69,6 @@ tell application "Microsoft Outlook"
 		-- Write logs
 		set theLogName to theYear & "_" & theMonth & "_" & theDay & "_" & theHour & theMinute & theSecond & ".json"
 		set theJsonEvent to "{\"timestamp\":\"" & theTimestamp & "\", \"sender\":\"" & theSenderEmail & "\", \"subject\":\"" & theSubject & "\",\"meeting\":" & isMeeting & ",\"priority\":\"" & thePriority & "\",\"forwarded\":" & isForwarded & ",\"redirected\":" & isRedirected & "}"
-		log (theJsonEvent)
 		my WriteLog(theJsonEvent, theLogName)
 	end repeat
 end tell
