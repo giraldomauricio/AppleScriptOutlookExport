@@ -34,7 +34,7 @@ end leadZero
 on WriteLog(the_text, the_file_name)
 	set this_file to logLocation & the_file_name
 	log "Writing to: " & this_file
-	my write_to_file(the_text, this_file, true)
+	-- my write_to_file(the_text, this_file, true)
 end WriteLog
 
 -- Message extraction
@@ -43,6 +43,10 @@ tell application "Microsoft Outlook"
 	set theMessages to messages of inbox
 	repeat with theMessage in theMessages
 		-- Pull data from Outlook list of messages
+		set thePriority to priority of theMessage as string
+		set isForwarded to forwarded of theMessage as string
+		set isRedirected to redirected of theMessage as string
+		set isMeeting to is meeting of theMessage
 		set theSubject to subject of theMessage
 		set theSender to sender of theMessage
 		set theSenderEmail to address of theSender
@@ -51,7 +55,7 @@ tell application "Microsoft Outlook"
 		set theDay to day of theTime as string
 		set theMonth to (month of theTime) * 1 as string
 		set theYear to year of theTime as string
-		-- Timestamp
+		-- Timestamp in ISO Format
 		set t to time of theTime
 		set h to t div hours
 		set m to t mod hours div minutes
@@ -64,7 +68,8 @@ tell application "Microsoft Outlook"
 		set theTimestamp to theYear & "-" & theMonth & "-" & theDay & " " & theHour & ":" & theMinute & ":" & theSecond & " -0500"
 		-- Write logs
 		set theLogName to theYear & "_" & theMonth & "_" & theDay & "_" & theHour & theMinute & theSecond & ".json"
-		set theJsonEvent to "{\"timestamp\":\"" & theTimestamp & "\", \"sender\":\"" & theSenderEmail & "\", \"subject\":\"" & theSubject & "\"}"
+		set theJsonEvent to "{\"timestamp\":\"" & theTimestamp & "\", \"sender\":\"" & theSenderEmail & "\", \"subject\":\"" & theSubject & "\",\"meeting\":" & isMeeting & ",\"priority\":\"" & thePriority & "\",\"forwarded\":" & isForwarded & ",\"redirected\":" & isRedirected & "}"
+		log (theJsonEvent)
 		my WriteLog(theJsonEvent, theLogName)
 	end repeat
 end tell
